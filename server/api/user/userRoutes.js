@@ -1,4 +1,5 @@
 var router = require('express').Router();
+var User = require('./userModel.js');
 
 // setup boilerplate route jsut to satisfy a request
 // for building
@@ -8,8 +9,43 @@ var router = require('express').Router();
 //Then use route() to remove redundant code.
 router.route('/')
   .get(function(req, res){
-    console.log('Hey from user!!');
-    res.send({ok: true});
+    User.find({}, function(err, users) {
+      res.send({success: true, users: users});
+    })
+  })
+  .post(function(req, res, next) {
+    User.create({
+      username: req.body.username
+    }, function(err, user) {
+      if (err) return next(err);
+      res.send({success: true, user: user});
+    });
   });
+
+router.route('/:user_id')
+  .get(function(req, res, next){
+    User.findById(req.params.user_id, function(err, user) {
+      if (err) return next(err);
+      if (!user) return next("No such user.");
+      res.send({success: true, user: user});
+    });
+  })
+  .put(function(req, res, next) {
+    User.findById(req.params.user_id, function(err, user) {
+      if (err) return next(err);
+      user.username = req.body.username;
+      user.address = req.body.address;
+      user.save(function(err) {
+        if (err) return next(err);
+        res.send({success: true, user: user})
+      })
+    });
+  })
+  .delete(function(req, res, next) {
+    User.remove({_id: req.params.user_id}, function(err, user) {
+      if (err) return next(err);
+      res.send({success: true, user: user});
+    });
+  })
 
 module.exports = router;
