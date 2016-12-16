@@ -13,23 +13,11 @@ mongoose.connect(config.db.url);
  app.use(bodyParser.json());
 
 
-//In a large application,
-//things could easily get out of control
-//if we keep adding code to a single
-//JavaScript file (server.js).
-// So  move the routes-related code
-//into  api module .
 app.use('/api/', api);
 
 app.use(function(err, req, res, next) {
   res.status(500).send({success: false, err: err.toString()});
 });
 
-// API endpoints such as below has been moved to user Router within api module
-//app.get('/user', function(req, res) {
-   // res.send([{username:'wine1'}, {username:'wine2'}]);
-//});
 
-
-// export the app for testing
 module.exports = app;

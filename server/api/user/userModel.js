@@ -6,7 +6,9 @@ var UserSchema = new Schema({
     type: String,
     unique: true,
     required: true
-  }
+  },
+
+  address: String
 });
 
 module.exports = mongoose.model('user', UserSchema);
